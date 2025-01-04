@@ -1,0 +1,48 @@
+:root {
+  --primary-color: oklch(72.3% 0.1162 251.11);
+  --secondary-color: oklch(75.38% 0.1697 56.05);
+  --tertiary-color: oklch(79% 0.22 68.5);
+}
+
+body {
+  margin: 0;
+}
+
+#outer-app {
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 500px;
+  height: calc(100vh - 40px);
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-image: url("bg-dark-blue.jpg");
+  background-size: cover;
+  background-position: center;
+  justify-content: center;
+  align-content: baseline;
+}
+
+#map {
+  height: 100%;
+  flex-basis: 600px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  border-radius: 10px;
+}
+
+#location-box {
+  flex-basis: 300px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+#ah-address {
+  margin: 0;
+  font-size: 48px;
+}
