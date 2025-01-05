@@ -100,8 +100,10 @@ const playGame = async function (allLocations, map) {
 
   /** 2. Set a pin on a location when clicked */
   map.on("click", (e) => {
-    clickedLocation = e.latlng;
-    askConformation(e.latlng, answerLayer);
+    if (!confirmed) {
+      clickedLocation = e.latlng;
+      askConformation(e.latlng, answerLayer);
+    }
   });
 
   /** 3. Add Event handler for conformation clicks */
