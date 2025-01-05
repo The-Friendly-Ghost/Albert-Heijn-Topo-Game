@@ -56,7 +56,13 @@ const getRandomAh = function (locations) {
   return getRandomAh(locations);
 };
 
-const confirmAnswer = function (answer, map, answerLayer) {
+/**
+ * Set pin on map click and give confirmation popup
+ * @param {*} answer The location of the click on the map
+ * @param {*} answerLayer The map layer of the answers
+ * @returns none
+ */
+const askConformation = function (answer, answerLayer) {
   /** Clear all marker instances on the markerGroup layer. This
    * is to prevent more than 1 answer to be visible at the same time.
    */
@@ -65,15 +71,12 @@ const confirmAnswer = function (answer, map, answerLayer) {
   /** Open confirmation popup */
   const popup = L.popup(answer, {
     content: `<div>  
-      <p>Is dit je keuze?</p>  
-      <button id="confirm-btn">Confirm</button>  
-      <button id="cancel-btn">Cancel</button>  
+      <p>Bevestig locatie</p>  
+      <button id="confirm-btn">Bevestigen</button>  
     </div>`,
     autoClose: false,
-    closeButton: false,
     closeOnClick: false,
   }).openOn(answerLayer);
-  return true;
 };
 
 /**
@@ -88,28 +91,45 @@ const playGame = async function (allLocations, map) {
   const locations = allLocations.osm.node.slice();
   let round = 1;
   let location = getRandomAh(locations);
+  let clickedLocation;
   let score = 0;
   const answerLayer = L.layerGroup().addTo(map);
 
+  /** 1. Set first location and start timer. */
+
+  /** 2. Set a pin on a location when clicked */
+  map.on("click", (e) => {
+    clickedLocation = e.latlng;
+    askConformation(e.latlng, answerLayer);
+  });
+
+  /** 3. Add Event handler for conformation clicks */
+  const mapDiv = document.getElementById("map");
+  mapDiv.addEventListener("click", (e) => {
+    if (e.target.id === "confirm-btn") {
+      /* Verwerk antwoord: */
+      /* 1. Set pin voor gegokte locatie op map */
+      /* 2. set pin voor daadwerkelijke locatie */
+      /* 3. bereken afstand */
+      /* 4. visualiseer afstand met cirkel */
+      /* 5. Bereken score, set naar score variabele, increase round */
+      /* reset:
+      6. verwijder alle markers */
+      /* 7. reset zoom */
+      /* 8. Nieuwe AH-locatie ophalen */
+      /* 9. timer resetten (extra) */
+    }
+
+    /** Extra: handle timer */
+    /** Extra: handle highscores */
+  });
+
   // Return a Promise that resolves after 10 rounds (clicks)
   return new Promise((resolve) => {
-    /** Set event handler for click on map */
-    map.on("click", (e) => {
-      /** On click: 1. give confirmation modal. 2. if confirmed,
-       * score the answer */
-      if (confirmAnswer(e.latlng, map, answerLayer)) {
-        // score = scoreAnswer(e.latlng, location);
-        // if (++round <= 11) {
-        //   /** If round 10 or before, get new location */
-        //   location = getRandomAh(locations);
-        //   round++;
-        // } else {
-        //   /** If round is at 11, end the game */
-        //   map.off();
-        //   resolve(score);
-        // }
-      }
-    });
+    if (round >= 11) {
+      map.off();
+      resolve(score);
+    }
   });
 };
 
