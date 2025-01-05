@@ -94,6 +94,7 @@ const playGame = async function (allLocations, map) {
   let clickedLocation;
   let score = 0;
   const answerLayer = L.layerGroup().addTo(map);
+  let confirmed = false;
 
   /** 1. Set first location and start timer. */
 
@@ -107,8 +108,10 @@ const playGame = async function (allLocations, map) {
   const mapDiv = document.getElementById("map");
   mapDiv.addEventListener("click", (e) => {
     if (e.target.id === "confirm-btn") {
+      confirmed = true;
       /* Verwerk antwoord: */
       /* 1. Set pin voor gegokte locatie op map */
+
       /* 2. set pin voor daadwerkelijke locatie */
       /* 3. bereken afstand */
       /* 4. visualiseer afstand met cirkel */
@@ -118,6 +121,7 @@ const playGame = async function (allLocations, map) {
       /* 7. reset zoom */
       /* 8. Nieuwe AH-locatie ophalen */
       /* 9. timer resetten (extra) */
+      confirmed = false;
     }
 
     /** Extra: handle timer */
