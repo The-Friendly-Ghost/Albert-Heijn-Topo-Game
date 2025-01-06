@@ -6,20 +6,37 @@
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   />
-  <!-- Insert own CSS -->
+  <!-- Insert app CSS -->
   <link rel="stylesheet" href="./style.css" />
 
   <section id="outer-app">
     <div id="start-screen" class="hidden"></div>
 
-    <!-- The Game section-->
-    <!-- Location modal-->
-    <div id="location-box">
-      <p id="ah-address">AH ADRES</p>
-      <p>Klik op de kaart</p>
-    </div>
     <!-- Map element -->
-    <div id="map"></div>
+    <div id="map">
+      <div id="textBox">
+        <div id="leftBox" class="infoBox">
+          <p id="ah-address"></p>
+          <p id="distanceScore"></p>
+        </div>
+        <div id="rightBox" class="infoBox">
+          <p id="counter">10</p>
+          <svg
+            id="continueBtn"
+            class="hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="m16.172 11l-5.364-5.364l1.414-1.414L20 12l-7.778 7.778l-1.414-1.414L16.172 13H4v-2z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Insert Leaflet Javascript -->
@@ -30,6 +47,6 @@
     crossorigin=""
   ></script>
 
-  <!-- Insert own script -->
+  <!-- Insert app script -->
   <script defer src="script.js"></script>
 </body>

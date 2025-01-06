@@ -2,16 +2,22 @@
   --primary-color: oklch(72.3% 0.1162 251.11);
   --secondary-color: oklch(75.38% 0.1697 56.05);
   --tertiary-color: oklch(79% 0.22 68.5);
+  --line-color: oklch(72.3% 0.1162 251.11 / 0.7);
+  --box-bg: oklch(100% 0 1 / 0.7);
 }
 
 body {
   margin: 0;
 }
 
+.hidden {
+  display: none;
+}
+
 #outer-app {
   color: white;
   font-family: Arial, Helvetica, sans-serif;
-  min-height: 500px;
+  min-height: 600px;
   height: calc(100vh - 40px);
   padding: 20px;
   display: flex;
@@ -25,24 +31,73 @@ body {
 }
 
 #map {
-  height: 100%;
+  height: calc(100% - 40px);
   flex-basis: 600px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: baseline;
   border-radius: 10px;
+  padding: 20px 20px;
 }
 
-#location-box {
-  flex-basis: 300px;
-  height: 100px;
+#textBox {
   display: flex;
-  flex-direction: column;
-  padding: 20px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  min-height: 100px;
+  z-index: 999;
+  justify-content: space-around;
 }
 
-#ah-address {
+.infoBox {
+  border-radius: 10px;
+  background-color: var(--box-bg);
+  justify-content: center;
+  align-content: center;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#leftBox {
+  flex-basis: 400px;
+  flex-grow: 8;
+}
+
+#ah-address,
+#distanceScore {
   margin: 0;
-  font-size: 48px;
+  font-size: 24px;
+  color: black;
+  text-align: center;
+  font-weight: bold;
+}
+
+#rightBox {
+  display: flex;
+  flex-direction: row;
+  flex-basis: 100px;
+  flex-grow: 1;
+  background-color: var(--secondary-color);
+  align-content: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#rightBox:hover {
+  background-color: var(--tertiary-color);
+}
+
+#continueBtn,
+#counter {
+  align-self: center;
+}
+
+#counter {
+  margin: 0;
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
 }
