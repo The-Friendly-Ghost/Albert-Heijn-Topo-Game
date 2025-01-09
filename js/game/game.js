@@ -1,145 +1,11 @@
-// Constants
-const MAP_CONFIG = {
-  initialView: {
-    lat: 52.154912,
-    lng: 5.386841,
-    zoom: 7,
-  },
-  tileLayer: {
-    url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png",
-    maxZoom: 19,
-    attribution:
-      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  },
-};
+"use strict";
 
-const GAME_CONFIG = {
-  roundsTotal: 10,
-  timePerRound: 20,
-  scoreMultipliers: {
-    distance: 1,
-    time: 2,
-  },
-};
+import { GAME_CONFIG, ICONS } from "../config.js";
+import { LocationService } from "./location.js";
+import { GameMap } from "./map.js";
+import { Player } from "../player/player.js";
 
-// Custom Icons
-const ICONS = {
-  ah: L.icon({
-    iconUrl: "AH_pin.png",
-    iconSize: [40, 45],
-    iconAnchor: [20, 45],
-  }),
-  user: L.icon({
-    iconUrl: "user_pin.png",
-    iconSize: [40, 45],
-    iconAnchor: [20, 45],
-  }),
-};
-
-class LocationService {
-  static async fetchLocations() {
-    try {
-      const response = await fetch("locations.json");
-      if (!response.ok) throw new Error("Failed to fetch locations");
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching locations:", error);
-      return null;
-    }
-  }
-
-  static getRandomLocation(locations) {
-    const hasRequiredTags = (location) => {
-      return (
-        location.tag.some((tag) => tag._k === "addr:city") &&
-        location.tag.some((tag) => tag._k === "addr:street")
-      );
-    };
-
-    const randomLocation =
-      locations[Math.floor(Math.random() * locations.length)];
-    return hasRequiredTags(randomLocation)
-      ? randomLocation
-      : this.getRandomLocation(locations);
-  }
-
-  static formatAddress(location) {
-    const getTagValue = (key) =>
-      location.tag.find((item) => item._k === key)?._v;
-    const street = getTagValue("addr:street");
-    const houseNumber = getTagValue("addr:housenumber");
-    const city = getTagValue("addr:city");
-
-    return `${street} ${houseNumber}, ${city}`;
-  }
-}
-
-class GameMap {
-  constructor() {
-    this.map = null;
-    this.answerLayer = null;
-  }
-
-  init() {
-    this.map = L.map("map", {
-      attributionControl: false,
-      zoomControl: false,
-    }).setView(
-      [MAP_CONFIG.initialView.lat, MAP_CONFIG.initialView.lng],
-      MAP_CONFIG.initialView.zoom
-    );
-
-    L.tileLayer(MAP_CONFIG.tileLayer.url, {
-      maxZoom: MAP_CONFIG.tileLayer.maxZoom,
-      attribution: MAP_CONFIG.tileLayer.attribution,
-    }).addTo(this.map);
-
-    this.answerLayer = L.layerGroup().addTo(this.map);
-    return this;
-  }
-
-  showConfirmationPopup(latlng) {
-    this.answerLayer.clearLayers();
-    return L.popup(latlng, {
-      content: '<div><button id="confirm-btn">Bevestigen</button></div>',
-      autoClose: false,
-      closeOnClick: false,
-    }).openOn(this.answerLayer);
-  }
-
-  drawLine(point1, point2) {
-    const lineCoords = [point1.getLatLng(), point2.getLatLng()];
-    L.polyline(lineCoords, {
-      color: "var(--line-color)",
-      weight: 2,
-    }).addTo(this.answerLayer);
-  }
-
-  fitMarkers(marker1, marker2) {
-    const bounds = L.latLngBounds([marker1.getLatLng(), marker2.getLatLng()]);
-    this.map.fitBounds(bounds, {
-      padding: [300, 100],
-      maxZoom: 14,
-      animate: true,
-      duration: 1.5,
-    });
-  }
-
-  resetView() {
-    this.map.flyTo(
-      [MAP_CONFIG.initialView.lat, MAP_CONFIG.initialView.lng],
-      MAP_CONFIG.initialView.zoom,
-      { duration: 0.5 }
-    );
-  }
-
-  clearAnswers() {
-    this.answerLayer.clearLayers();
-  }
-}
-
-class GameTimer {
+export class GameTimer {
   constructor(counterElement) {
     this.counterElement = counterElement;
     this.interval = null;
@@ -177,9 +43,10 @@ class GameTimer {
   }
 }
 
-class Game {
+export class Game {
   constructor() {
     this.map = new GameMap();
+    this.player = new Player();
     this.timer = new GameTimer(document.getElementById("counter"));
     this.elements = {
       ahTitle: document.getElementById("ah-address"),
@@ -190,7 +57,6 @@ class Game {
 
     this.state = {
       round: 1,
-      score: 0,
       currentLocation: null,
       clickedLocation: null,
       disableMapClick: false,
@@ -277,7 +143,7 @@ class Game {
       userMarker.getLatLng().distanceTo(ahMarker.getLatLng()) / 1000
     );
     const roundScore = this.calculateScore(distanceKM, this.timer.timeLeft);
-    this.state.score += roundScore;
+    this.player.score += roundScore;
 
     this.map.drawLine(userMarker, ahMarker);
     this.elements.result.textContent = `Afstand: ${distanceKM}KM (score +${roundScore})`;
@@ -322,12 +188,6 @@ class Game {
   }
 
   endGame() {
-    alert(this.state.score);
+    alert(this.player.score);
   }
 }
-
-// Initialize the game
-document.addEventListener("DOMContentLoaded", () => {
-  const game = new Game();
-  game.init().catch(console.error);
-});

@@ -23,7 +23,7 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  background-image: url("bg-dark-blue.jpg");
+  background-image: url("/media/bg-dark-blue.jpg");
   background-size: cover;
   background-position: center;
   justify-content: center;
