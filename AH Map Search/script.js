@@ -1,258 +1,333 @@
-"use strict";
-
-const getLocations = async function () {
-  try {
-    const response = await fetch("locations.json");
-    if (!response.ok) {
-      throw new Error("Failed to fetch the JSON file");
-    }
-    const locations = await response.json(); // Automatically parses the JSON
-    return locations; // Return the parsed JSON
-  } catch (error) {
-    console.error("Error:", error);
-    return null; // Return null if an error occurs
-  }
+// Constants
+const MAP_CONFIG = {
+  initialView: {
+    lat: 52.154912,
+    lng: 5.386841,
+    zoom: 7,
+  },
+  tileLayer: {
+    url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png",
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  },
 };
 
-/**
- * Creates the map instance
- * @returns map object
- */
-const initMap = async function () {
-  /** Init Leaflet instance */
-  const map = L.map("map", {
-    attributionControl: false,
-    zoomControl: false,
-  }).setView([52.154912, 5.386841], 7);
-  /** Set Leaflet map style  */
-  L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png",
-    {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }
-  ).addTo(map);
-
-  return map;
+const GAME_CONFIG = {
+  roundsTotal: 10,
+  timePerRound: 20,
+  scoreMultipliers: {
+    distance: 1,
+    time: 2,
+  },
 };
 
-/**
- * Returns a random Albert Heijn location from the locations array
- * @param {*} locations Array with all Albert Heijn locations
- * @returns 1 Albert Heijn location as an object
- */
-const getRandomAh = function (locations) {
-  const num = Math.floor(Math.random() * locations.length);
-  const ah = locations.at(num);
-
-  /** Verify if AH contains an adress and city. If not, call function again*/
-  if (
-    ah.tag.some((tag) => tag._k === "addr:city") &&
-    ah.tag.some((tag) => tag._k === "addr:street")
-  ) {
-    return ah;
-  }
-  return getRandomAh(locations);
-};
-
-/**
- * Set pin on map click and give confirmation popup
- * @param {*} answer The location of the click on the map
- * @param {*} answerLayer The map layer of the answers
- * @returns none
- */
-const askConformation = function (answer, answerLayer) {
-  /** Clear all marker instances on the markerGroup layer. This
-   * is to prevent more than 1 answer to be visible at the same time.
-   */
-  answerLayer.clearLayers();
-
-  /** Open confirmation popup */
-  const popup = L.popup(answer, {
-    content: `<div>  
-      <p>Bevestig locatie</p>  
-      <button id="confirm-btn">Bevestigen</button>  
-    </div>`,
-    autoClose: false,
-    closeOnClick: false,
-  }).openOn(answerLayer);
-};
-
-const setAhText = function (text, location) {
-  const city = location.tag.filter((item) => item._k === "addr:city")[0]._v;
-  const street = location.tag.filter((item) => item._k === "addr:street")[0]._v;
-  const houseNumber = location.tag.filter(
-    (item) => item._k === "addr:housenumber"
-  )[0]._v;
-
-  text.textContent = `${street} ${houseNumber}, ${city} `;
-};
-
-const drawLineBetweenPoints = function (m1, m2, layer) {
-  // Get start and end points of the line
-  const lineCoords = [m1.getLatLng(), m2.getLatLng()];
-  // Draw line
-  L.polyline(lineCoords, {
-    color: "var(--line-color)",
-    weight: 2,
-  }).addTo(layer);
-};
-
-const zoomMapToMarkers = function (m1, m2, map) {
-  // Methode 2: Met de coördinaten
-  const bounds = L.latLngBounds([m1.getLatLng(), m2.getLatLng()]);
-  map.fitBounds(bounds, {
-    padding: [300, 100],
-    maxZoom: 17,
-    animate: true,
-    duration: 1.5,
-  });
-};
-
-/**
- * Main function that is running during the game. Only resolves
- * after 10 rounds.
- * @param {*} allLocations Object with all AH location info
- * @param {*} map Leaflet map instance
- * @returns The score that the player got
- */
-const playGame = async function (allLocations, map) {
-  /** Create neccesary variables */
-  const locations = allLocations.osm.node.slice(); // Locations copy
-  let round = 1; // round counter
-  let location = getRandomAh(locations); // AH location (changes every round)
-  let clickedLocation; // The current clicked location on the map
-  let score = 0; // The score (adds up every round)
-  const answerLayer = L.layerGroup().addTo(map); // Layer with the markers
-  let disableMapClick = false; // true if user confirmed answer
-  let nextBtnActive = false; // true when next button is active
-  const ahTitle = document.getElementById("ah-address"); // DOM-element text
-  const result = document.getElementById("distanceScore"); // DOM-element score
-  const counter = document.getElementById("counter");
-  const nextBtn = document.getElementById("continueBtn");
-  // The custom AH location pin
-  const ahIcon = L.icon({
+// Custom Icons
+const ICONS = {
+  ah: L.icon({
     iconUrl: "AH_pin.png",
-    iconSize: [40, 45], // width: 38px, height: 40px
-    iconAnchor: [20, 45], // x: half of width, y: full height for bottom point
-  });
-  // The custom user location pin
-  const userIcon = L.icon({
+    iconSize: [40, 45],
+    iconAnchor: [20, 45],
+  }),
+  user: L.icon({
     iconUrl: "user_pin.png",
-    iconSize: [40, 45], // width: 38px, height: 40px
-    iconAnchor: [20, 45], // x: half of width, y: full height for bottom point
-  });
+    iconSize: [40, 45],
+    iconAnchor: [20, 45],
+  }),
+};
 
-  /** 1. Set first location and start timer. */
-  setAhText(ahTitle, location);
-
-  /** 2. Set a pin on a location when clicked */
-  map.on("click", (e) => {
-    if (!disableMapClick) {
-      clickedLocation = e.latlng;
-      askConformation(e.latlng, answerLayer);
+class LocationService {
+  static async fetchLocations() {
+    try {
+      const response = await fetch("locations.json");
+      if (!response.ok) throw new Error("Failed to fetch locations");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+      return null;
     }
-  });
+  }
 
-  return new Promise((resolve) => {
-    /** 3. Add Event handler for confirmation clicks */
-    const mapDiv = document.getElementById("map");
-    mapDiv.addEventListener("click", (e) => {
-      if (e.target.id === "confirm-btn") {
-        disableMapClick = true;
-        /* 1. Remove confirmation pop up and set pin for clicked location */
-        answerLayer.clearLayers();
-        const userPin = L.marker([clickedLocation.lat, clickedLocation.lng], {
-          icon: userIcon,
-        }).addTo(answerLayer);
+  static getRandomLocation(locations) {
+    const hasRequiredTags = (location) => {
+      return (
+        location.tag.some((tag) => tag._k === "addr:city") &&
+        location.tag.some((tag) => tag._k === "addr:street")
+      );
+    };
 
-        /* 2. Set pin for the Albert Heijn location */
-        const ahPin = L.marker([location._lat, location._lon], {
-          icon: ahIcon,
-        }).addTo(answerLayer);
+    const randomLocation =
+      locations[Math.floor(Math.random() * locations.length)];
+    return hasRequiredTags(randomLocation)
+      ? randomLocation
+      : this.getRandomLocation(locations);
+  }
 
-        /* 3. Calculate distance in KM */
-        const distanceKM = Math.floor(
-          userPin.getLatLng().distanceTo(ahPin.getLatLng()) / 1000
-        );
+  static formatAddress(location) {
+    const getTagValue = (key) =>
+      location.tag.find((item) => item._k === key)?._v;
+    const street = getTagValue("addr:street");
+    const houseNumber = getTagValue("addr:housenumber");
+    const city = getTagValue("addr:city");
 
-        /** 4. Calculate score. User only earns points if the answer
-         * is within 100km of the actual location. 100 points is the perfect
-         * answer. For every kilomter distance, 1 point gets subtracted,
-         * until 0 remains.
-         */
-        if (distanceKM < 100) {
-          score += 100 - distanceKM;
-        }
+    return `${street} ${houseNumber}, ${city}`;
+  }
+}
 
-        /* 5. Visualize with line and set distance text */
-        drawLineBetweenPoints(userPin, ahPin, answerLayer, distanceKM);
-        result.textContent = `Afstand: ${distanceKM}KM (score +${
-          distanceKM < 100 ? 100 - distanceKM : "0"
-        })`;
+class GameMap {
+  constructor() {
+    this.map = null;
+    this.answerLayer = null;
+  }
 
-        /* 7. Zoom out to correct boundaries */
-        zoomMapToMarkers(userPin, ahPin, map);
+  init() {
+    this.map = L.map("map", {
+      attributionControl: false,
+      zoomControl: false,
+    }).setView(
+      [MAP_CONFIG.initialView.lat, MAP_CONFIG.initialView.lng],
+      MAP_CONFIG.initialView.zoom
+    );
 
-        /* 9. Hide counter & show continue button */
-        nextBtn.classList.remove("hidden");
-        counter.classList.add("hidden");
-        nextBtnActive = true;
+    L.tileLayer(MAP_CONFIG.tileLayer.url, {
+      maxZoom: MAP_CONFIG.tileLayer.maxZoom,
+      attribution: MAP_CONFIG.tileLayer.attribution,
+    }).addTo(this.map);
+
+    this.answerLayer = L.layerGroup().addTo(this.map);
+    return this;
+  }
+
+  showConfirmationPopup(latlng) {
+    this.answerLayer.clearLayers();
+    return L.popup(latlng, {
+      content: '<div><button id="confirm-btn">Bevestigen</button></div>',
+      autoClose: false,
+      closeOnClick: false,
+    }).openOn(this.answerLayer);
+  }
+
+  drawLine(point1, point2) {
+    const lineCoords = [point1.getLatLng(), point2.getLatLng()];
+    L.polyline(lineCoords, {
+      color: "var(--line-color)",
+      weight: 2,
+    }).addTo(this.answerLayer);
+  }
+
+  fitMarkers(marker1, marker2) {
+    const bounds = L.latLngBounds([marker1.getLatLng(), marker2.getLatLng()]);
+    this.map.fitBounds(bounds, {
+      padding: [300, 100],
+      maxZoom: 14,
+      animate: true,
+      duration: 1.5,
+    });
+  }
+
+  resetView() {
+    this.map.flyTo(
+      [MAP_CONFIG.initialView.lat, MAP_CONFIG.initialView.lng],
+      MAP_CONFIG.initialView.zoom,
+      { duration: 0.5 }
+    );
+  }
+
+  clearAnswers() {
+    this.answerLayer.clearLayers();
+  }
+}
+
+class GameTimer {
+  constructor(counterElement) {
+    this.counterElement = counterElement;
+    this.interval = null;
+    this.timeLeft = GAME_CONFIG.timePerRound;
+  }
+
+  start(onTimeUp) {
+    this.reset();
+    this.interval = setInterval(() => {
+      this.timeLeft--;
+      this.updateDisplay();
+
+      if (this.timeLeft <= 0) {
+        this.stop();
+        onTimeUp();
       }
+    }, 1000);
+  }
 
-      /** Trigger this event if the continue button is clicked */
-      if (e.target.closest("#rightBox") && nextBtnActive) {
-        /* 10. Remove all markers and line */
-        answerLayer.clearLayers();
-        /* 11. reset zoom */
-        map.flyTo([52.154912, 5.386841], 7, {
-          duration: 0.5,
-        });
-        /* 12. Get new location and show text */
-        location = getRandomAh(locations);
-        setAhText(ahTitle, location);
-        result.textContent = " ";
-        /* 13. Hide continue button, show timer */
-        nextBtn.classList.add("hidden");
-        counter.classList.remove("hidden");
-        nextBtnActive = false;
+  stop() {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+  }
 
-        /* 14. Enable map click */
-        disableMapClick = false;
+  reset() {
+    this.stop();
+    this.timeLeft = GAME_CONFIG.timePerRound;
+    this.updateDisplay();
+  }
 
-        /* 8. Increase round */
-        if (++round >= 11) {
-          map.off();
-          resolve(score);
-        }
+  updateDisplay() {
+    this.counterElement.textContent = this.timeLeft.toString();
+  }
+}
+
+class Game {
+  constructor() {
+    this.map = new GameMap();
+    this.timer = new GameTimer(document.getElementById("counter"));
+    this.elements = {
+      ahTitle: document.getElementById("ah-address"),
+      result: document.getElementById("distanceScore"),
+      nextBtn: document.getElementById("continueBtn"),
+      counter: document.getElementById("counter"),
+    };
+
+    this.state = {
+      round: 1,
+      score: 0,
+      currentLocation: null,
+      clickedLocation: null,
+      disableMapClick: false,
+      nextBtnActive: false,
+    };
+  }
+
+  async init() {
+    const locations = await LocationService.fetchLocations();
+    if (!locations) throw new Error("No locations available");
+
+    this.locations = locations.osm.node.slice();
+    this.map.init();
+    this.setupEventListeners();
+    this.startRound();
+  }
+
+  setupEventListeners() {
+    this.map.map.on("click", (e) => {
+      if (!this.state.disableMapClick) {
+        this.state.clickedLocation = e.latlng;
+        this.map.showConfirmationPopup(e.latlng);
       }
-
-      /** Extra: handle timer */
-      /** Extra: handle highscores */
     });
 
-    // Return a Promise that resolves after 10 rounds (clicks)
-  });
-};
-
-const endGame = function (score) {
-  alert(score);
-};
-
-const initApp = async function () {
-  try {
-    // Call the async function to get all AH locations
-    const allLocations = await getLocations();
-    if (!allLocations) {
-      throw new Error("GetLocations: No locations available");
-    }
-    const map = await initMap();
-    const score = await playGame(allLocations, map);
-    endGame(score);
-  } catch (error) {
-    console.error(error.message);
+    document.getElementById("map").addEventListener("click", (e) => {
+      if (e.target.id === "confirm-btn") {
+        this.handleConfirmation();
+      }
+      if (e.target.closest("#rightBox") && this.state.nextBtnActive) {
+        this.handleNextRound();
+      }
+    });
   }
-};
 
-initApp();
+  startRound() {
+    this.state.currentLocation = LocationService.getRandomLocation(
+      this.locations
+    );
+    this.elements.ahTitle.textContent = LocationService.formatAddress(
+      this.state.currentLocation
+    );
+    this.timer.start(() => this.handleTimeUp());
+    this.state.disableMapClick = false;
+    this.state.nextBtnActive = false;
+    this.elements.result.textContent = " ";
+    this.elements.nextBtn.classList.add("hidden");
+    this.elements.counter.classList.remove("hidden");
+  }
+
+  calculateScore(distanceKM, timeLeft) {
+    if (distanceKM >= 100 || timeLeft <= 0) return 0;
+    return Math.max(
+      0,
+      Math.trunc(
+        100 -
+          distanceKM -
+          (GAME_CONFIG.timePerRound - timeLeft) *
+            GAME_CONFIG.scoreMultipliers.time
+      )
+    );
+  }
+
+  handleConfirmation() {
+    this.timer.stop();
+    this.map.clearAnswers();
+    this.state.disableMapClick = true;
+
+    const userMarker = L.marker(
+      [this.state.clickedLocation.lat, this.state.clickedLocation.lng],
+      {
+        icon: ICONS.user,
+      }
+    ).addTo(this.map.answerLayer);
+
+    const ahMarker = L.marker(
+      [this.state.currentLocation._lat, this.state.currentLocation._lon],
+      {
+        icon: ICONS.ah,
+      }
+    ).addTo(this.map.answerLayer);
+
+    const distanceKM = Math.floor(
+      userMarker.getLatLng().distanceTo(ahMarker.getLatLng()) / 1000
+    );
+    const roundScore = this.calculateScore(distanceKM, this.timer.timeLeft);
+    this.state.score += roundScore;
+
+    this.map.drawLine(userMarker, ahMarker);
+    this.elements.result.textContent = `Afstand: ${distanceKM}KM (score +${roundScore})`;
+    this.map.fitMarkers(userMarker, ahMarker);
+
+    this.elements.nextBtn.classList.remove("hidden");
+    this.elements.counter.classList.add("hidden");
+    this.state.nextBtnActive = true;
+  }
+
+  handleTimeUp() {
+    if (this.state.disableMapClick) return;
+
+    this.state.disableMapClick = true;
+    this.map.clearAnswers();
+
+    const ahMarker = L.marker(
+      [this.state.currentLocation._lat, this.state.currentLocation._lon],
+      {
+        icon: ICONS.ah,
+      }
+    ).addTo(this.map.answerLayer);
+
+    this.elements.result.textContent = "Tijd is op! (score +0)";
+    this.map.fitMarkers(ahMarker, ahMarker);
+
+    this.elements.nextBtn.classList.remove("hidden");
+    this.elements.counter.classList.add("hidden");
+    this.state.nextBtnActive = true;
+  }
+
+  handleNextRound() {
+    this.map.clearAnswers();
+
+    if (++this.state.round > GAME_CONFIG.roundsTotal) {
+      this.endGame();
+      return;
+    }
+
+    this.map.resetView();
+    this.startRound();
+  }
+
+  endGame() {
+    alert(this.state.score);
+  }
+}
+
+// Initialize the game
+document.addEventListener("DOMContentLoaded", () => {
+  const game = new Game();
+  game.init().catch(console.error);
+});
