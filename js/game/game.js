@@ -3,7 +3,6 @@
 import { GAME_CONFIG, ICONS } from "../config.js";
 import { LocationService } from "./location.js";
 import { GameMap } from "./map.js";
-import { Player } from "../player/player.js";
 
 export class GameTimer {
   constructor(counterElement) {
@@ -46,7 +45,6 @@ export class GameTimer {
 export class Game {
   constructor() {
     this.map = new GameMap();
-    this.player = new Player();
     this.timer = new GameTimer(document.getElementById("counter"));
     this.elements = {
       ahTitle: document.getElementById("ah-address"),
@@ -57,11 +55,14 @@ export class Game {
 
     this.state = {
       round: 1,
+      score: 0,
       currentLocation: null,
       clickedLocation: null,
       disableMapClick: false,
       nextBtnActive: false,
     };
+
+    this.init();
   }
 
   async init() {
@@ -71,7 +72,7 @@ export class Game {
     this.locations = locations.osm.node.slice();
     this.map.init();
     this.setupEventListeners();
-    this.startRound();
+    // this.startRound();
   }
 
   setupEventListeners() {
@@ -143,7 +144,7 @@ export class Game {
       userMarker.getLatLng().distanceTo(ahMarker.getLatLng()) / 1000
     );
     const roundScore = this.calculateScore(distanceKM, this.timer.timeLeft);
-    this.player.score += roundScore;
+    this.state.score += roundScore;
 
     this.map.drawLine(userMarker, ahMarker);
     this.elements.result.textContent = `Afstand: ${distanceKM}KM (score +${roundScore})`;
@@ -188,6 +189,6 @@ export class Game {
   }
 
   endGame() {
-    alert(this.player.score);
+    alert(this.state.score);
   }
 }

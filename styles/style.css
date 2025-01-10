@@ -1,25 +1,51 @@
+/* Globals */
 :root {
   --primary-color: oklch(72.3% 0.1162 251.11);
   --secondary-color: oklch(75.38% 0.1697 56.05);
   --tertiary-color: oklch(79% 0.22 68.5);
   --line-color: oklch(72.3% 0.1162 251.11 / 0.7);
   --box-bg: oklch(100% 0 1 / 0.7);
+  --welcome-bg: oklch(0% 0 1 / 0.6);
+  --welcome-bg-popup: oklch(100% 0 1 / 0.7);
+  --min-container-height: 600px;
+  --def-padding: 20px;
 }
 
 body {
   margin: 0;
 }
 
+/* Global sections */
 .hidden {
-  display: none;
+  display: none !important;
+}
+
+.infoBox {
+  border-radius: 10px;
+  background-color: var(--box-bg);
+  justify-content: center;
+  align-content: center;
+  padding: calc(var(--def-padding) / 2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  background-color: var(--secondary-color);
+  align-content: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: var(--tertiary-color);
 }
 
 #outer-app {
   color: white;
   font-family: Arial, Helvetica, sans-serif;
-  min-height: 600px;
-  height: calc(100vh - 40px);
-  padding: 20px;
+  min-height: var(--min-container-height);
+  padding: var(--def-padding);
+  height: calc(100vh - 2 * var(--def-padding));
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -30,15 +56,66 @@ body {
   align-content: baseline;
 }
 
+#overlay-section {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  min-height: calc(var(--min-container-height) + 2 * var(--def-padding));
+  backdrop-filter: blur(3px);
+  background: var(--welcome-bg);
+  z-index: 99999;
+}
+
+#overlay-inner {
+  background-image: url("/media/bg-dark-blue.jpg");
+  background-size: cover;
+  position: absolute;
+  display: flex;
+  padding: 20px;
+  top: calc(50% - 250px);
+  width: 80%;
+  min-height: 500px;
+}
+
+/* Start section */
+#start-section {
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  gap: 20px;
+}
+#startBtn {
+  min-height: 70px;
+  height: 70px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+
+#music {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Game section */
 #map {
-  height: calc(100% - 40px);
-  flex-basis: 600px;
+  height: calc(100% - 2 * var(--def-padding));
+  flex-basis: var(--min-container-height);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: baseline;
   border-radius: 10px;
-  padding: 20px 20px;
+  padding: var(--def-padding);
 }
 
 #textBox {
@@ -49,15 +126,6 @@ body {
   min-height: 100px;
   z-index: 999;
   justify-content: space-around;
-}
-
-.infoBox {
-  border-radius: 10px;
-  background-color: var(--box-bg);
-  justify-content: center;
-  align-content: center;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #leftBox {
@@ -79,14 +147,6 @@ body {
   flex-direction: row;
   flex-basis: 100px;
   flex-grow: 1;
-  background-color: var(--secondary-color);
-  align-content: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-#rightBox:hover {
-  background-color: var(--tertiary-color);
 }
 
 #continueBtn,
@@ -101,16 +161,6 @@ body {
   color: white;
   text-align: center;
 }
-
-/* .leaflet-popup-content {
-  font-size: 16px;
-  color: black;
-  text-align: center;
-  font-weight: bold;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-} */
 
 #confirm-btn {
   background: var(--secondary-color);

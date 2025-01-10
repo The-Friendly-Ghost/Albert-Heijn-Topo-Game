@@ -10,17 +10,97 @@
   <link rel="stylesheet" href="/styles/style.css" />
 
   <section id="outer-app">
-    <div id="start-screen" class="hidden"></div>
+    <!-- Overlay Section -->
+    <div id="overlay-section">
+      <div id="overlay-inner" class="infoBox">
+        <!-- Before Game-->
+        <div id="start-section">
+          <div id="start-text-content">
+            <h1>Albert Heijn Topo-challenge</h1>
+            <p>
+              Ben jij dé Albert Heijn-kenner? Bewijs het maar dan! Kun jij op de
+              kaart aanwijzen waar 10 willekeurige Albert Heijn-filialen liggen?
+            </p>
+            <p>
+              Bovenin het scherm zie je straks een willekeurig AH-filiaal (NL of
+              BE). Je hebt 20 seconden om te raden waar dit filiaal is door op
+              de kaart te klikken en op 'bevestig' te drukken.
+            </p>
+            <p>
+              Score: je krijgt per vraag maximaal 100 punten. Voor elke
+              kilometer afstand gaat er 1 punt van je score af. Voor elke
+              seconde gaan er daarnaast ook nog 2 punten van je score af
+            </p>
+          </div>
+          <button id="startBtn" class="btn">Start</button>
+          <div id="music">
+            <small
+              >Kun je slecht tegen stiltes? Wil je extra motivatie? Of wil je
+              gewoon een klassieker horen tijdens het spelen?</small
+            >
+            <svg
+              id="playBtn"
+              xmlns="http://www.w3.org/2000/svg"
+              width="26"
+              height="26"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1m3.901 7L6 4.066v7.868z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <svg
+              class="hidden"
+              id="stopBtn"
+              xmlns="http://www.w3.org/2000/svg"
+              width="26"
+              height="26"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1M6 5.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
 
-    <!-- Map element -->
+        <!-- After Game -->
+        <div id="end-section" class="hidden">
+          <h1>Jouw score</h1>
+          <p>
+            Ben jij dé Albert Heijn kenner? Bewijs het maar dan! Kun jij op de
+            kaart aanwijzen waar 10 willekeurige Albert Heijn-filialen liggen?
+          </p>
+          <p>
+            Bovenin het scherm zie je straks een willekeurig AH-filiaal (NL of
+            BE). Je hebt 20 seconden om te raden waar dit filiaal is door op de
+            kaart te klikken en op 'bevestig' te drukken.
+          </p>
+          <p>
+            <a href="https://github.com/the-friendly-ghost"
+              >Door: github.com/the-friendly-ghost</a
+            >
+          </p>
+          <button id="startBtn" class="btn">Start</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game section -->
     <div id="map">
       <div id="textBox">
         <div id="leftBox" class="infoBox">
           <p id="ah-address"></p>
           <p id="distanceScore"></p>
         </div>
-        <div id="rightBox" class="infoBox">
-          <p id="counter">10</p>
+        <div id="rightBox" class="infoBox btn">
+          <p id="counter">20</p>
           <svg
             id="continueBtn"
             class="hidden"
@@ -37,9 +117,6 @@
         </div>
       </div>
     </div>
-
-    <!-- End Screen -->
-    <div id="end-screen"></div>
   </section>
 
   <!-- Insert Leaflet Javascript -->
