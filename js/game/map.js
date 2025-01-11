@@ -9,6 +9,10 @@ export class GameMap {
   }
 
   init() {
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
     this.map = L.map("map", {
       attributionControl: false,
       zoomControl: false,
@@ -24,6 +28,13 @@ export class GameMap {
 
     this.answerLayer = L.layerGroup().addTo(this.map);
     return this;
+  }
+
+  destroy() {
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
   }
 
   showConfirmationPopup(latlng) {

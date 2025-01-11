@@ -48,10 +48,14 @@ export class Game {
     this.timer = new GameTimer(document.getElementById("counter"));
     this.elements = {
       ahTitle: document.getElementById("ah-address"),
-      result: document.getElementById("distanceScore"),
-      nextBtn: document.getElementById("continueBtn"),
+      result: document.getElementById("distance-score"),
+      nextBtn: document.getElementById("continue-btn"),
       counter: document.getElementById("counter"),
+      mapElement: document.getElementById("map"),
     };
+
+    this.handleMapClick = this.handleMapClick.bind(this);
+    this.handleMapElementClick = this.handleMapElementClick.bind(this);
 
     this.state = {
       round: 1,
@@ -75,22 +79,28 @@ export class Game {
     // this.startRound();
   }
 
-  setupEventListeners() {
-    this.map.map.on("click", (e) => {
-      if (!this.state.disableMapClick) {
-        this.state.clickedLocation = e.latlng;
-        this.map.showConfirmationPopup(e.latlng);
-      }
-    });
+  handleMapClick(e) {
+    if (!this.state.disableMapClick) {
+      this.state.clickedLocation = e.latlng;
+      this.map.showConfirmationPopup(e.latlng);
+    }
+  }
 
-    document.getElementById("map").addEventListener("click", (e) => {
-      if (e.target.id === "confirm-btn") {
-        this.handleConfirmation();
-      }
-      if (e.target.closest("#rightBox") && this.state.nextBtnActive) {
-        this.handleNextRound();
-      }
-    });
+  handleMapElementClick(e) {
+    if (e.target.id === "confirm-btn") {
+      this.handleConfirmation();
+    }
+    if (e.target.closest("#right-box") && this.state.nextBtnActive) {
+      this.handleNextRound();
+    }
+  }
+
+  setupEventListeners() {
+    this.map.map.on("click", this.handleMapClick);
+    this.elements.mapElement.addEventListener(
+      "click",
+      this.handleMapElementClick
+    );
   }
 
   startRound() {
@@ -178,7 +188,6 @@ export class Game {
 
   handleNextRound() {
     this.map.clearAnswers();
-
     if (++this.state.round > GAME_CONFIG.roundsTotal) {
       this.endGame();
       return;
@@ -188,7 +197,32 @@ export class Game {
     this.startRound();
   }
 
+  destroy() {
+    if (this.map.map) {
+      this.map.map.off("click", this.handleMapClick);
+    }
+    this.elements.mapElement.removeEventListener(
+      "click",
+      this.handleMapElementClick
+    );
+    this.timer.stop();
+    this.map.destroy();
+    this.state = {
+      round: 1,
+      score: 0,
+      currentLocation: null,
+      clickedLocation: null,
+      disableMapClick: false,
+      nextBtnActive: false,
+    };
+  }
+
   endGame() {
-    alert(this.state.score);
+    const gameEndEvent = new CustomEvent("gameEnd", {
+      detail: {
+        score: this.state.score,
+      },
+    });
+    document.dispatchEvent(gameEndEvent);
   }
 }

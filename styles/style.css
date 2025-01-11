@@ -20,7 +20,7 @@ body {
   display: none !important;
 }
 
-.infoBox {
+.info-box {
   border-radius: 10px;
   background-color: var(--box-bg);
   justify-content: center;
@@ -90,7 +90,7 @@ body {
   justify-content: center;
   gap: 20px;
 }
-#startBtn {
+#start-btn {
   min-height: 70px;
   height: 70px;
   border: 0;
@@ -106,6 +106,24 @@ body {
   gap: 10px;
 }
 
+/* End section */
+#end-section {
+  width: 100%;
+}
+
+#end-grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-basis: 300px;
+}
+
 /* Game section */
 #map {
   height: calc(100% - 2 * var(--def-padding));
@@ -118,7 +136,7 @@ body {
   padding: var(--def-padding);
 }
 
-#textBox {
+#text-box {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -128,13 +146,13 @@ body {
   justify-content: space-around;
 }
 
-#leftBox {
+#left-box {
   flex-basis: 400px;
   flex-grow: 8;
 }
 
 #ah-address,
-#distanceScore {
+#distance-score {
   margin: 0;
   font-size: 24px;
   color: black;
@@ -142,14 +160,14 @@ body {
   font-weight: bold;
 }
 
-#rightBox {
+#right-box {
   display: flex;
   flex-direction: row;
   flex-basis: 100px;
   flex-grow: 1;
 }
 
-#continueBtn,
+#continue-btn,
 #counter {
   align-self: center;
 }

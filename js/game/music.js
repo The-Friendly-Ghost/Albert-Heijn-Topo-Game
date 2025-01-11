@@ -5,17 +5,16 @@ export class Music {
     this.audio = new Audio("../../media/ah_song.m4a");
     this.elements = {
       parent: document.getElementById("music"),
-      play: document.getElementById("playBtn"),
-      stop: document.getElementById("stopBtn"),
+      play: document.getElementById("play-btn"),
+      stop: document.getElementById("stop-btn"),
     };
 
     this.elements.parent.addEventListener("click", (e) => {
-      if (e.target.closest("#playBtn")) {
+      if (e.target.closest("#play-btn")) {
         this.playMusic();
-      } else if (e.target.closest("#stopBtn")) {
+      } else if (e.target.closest("#stop-btn")) {
         this.stopMusic();
       }
-      console.log(e.target);
     });
   }
 

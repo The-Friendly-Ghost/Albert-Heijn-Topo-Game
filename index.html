@@ -12,7 +12,7 @@
   <section id="outer-app">
     <!-- Overlay Section -->
     <div id="overlay-section">
-      <div id="overlay-inner" class="infoBox">
+      <div id="overlay-inner" class="info-box">
         <!-- Before Game-->
         <div id="start-section">
           <div id="start-text-content">
@@ -32,14 +32,14 @@
               seconde gaan er daarnaast ook nog 2 punten van je score af
             </p>
           </div>
-          <button id="startBtn" class="btn">Start</button>
+          <button id="start-btn" class="btn">Start</button>
           <div id="music">
             <small
               >Kun je slecht tegen stiltes? Wil je extra motivatie? Of wil je
               gewoon een klassieker horen tijdens het spelen?</small
             >
             <svg
-              id="playBtn"
+              id="play-btn"
               xmlns="http://www.w3.org/2000/svg"
               width="26"
               height="26"
@@ -54,7 +54,7 @@
             </svg>
             <svg
               class="hidden"
-              id="stopBtn"
+              id="stop-btn"
               xmlns="http://www.w3.org/2000/svg"
               width="26"
               height="26"
@@ -72,37 +72,39 @@
 
         <!-- After Game -->
         <div id="end-section" class="hidden">
-          <h1>Jouw score</h1>
-          <p>
-            Ben jij dé Albert Heijn kenner? Bewijs het maar dan! Kun jij op de
-            kaart aanwijzen waar 10 willekeurige Albert Heijn-filialen liggen?
-          </p>
-          <p>
-            Bovenin het scherm zie je straks een willekeurig AH-filiaal (NL of
-            BE). Je hebt 20 seconden om te raden waar dit filiaal is door op de
-            kaart te klikken en op 'bevestig' te drukken.
-          </p>
-          <p>
-            <a href="https://github.com/the-friendly-ghost"
-              >Door: github.com/the-friendly-ghost</a
-            >
-          </p>
-          <button id="startBtn" class="btn">Start</button>
+          <div id="end-grid">
+            <div id="grid-left" class="grid-item">
+              <p id="score">Jouw score: <span id="score-count">0</span></p>
+              <p id="is-highscore" class="hidden">Je hebt een highscore!</p>
+              <p>Top-5 scores van de laatste 30 dagen</p>
+              <div id="highscores"></div>
+              <button id="submit-score-btn" class="btn">Stuur score</button>
+              <p>
+                <a href="https://github.com/the-friendly-ghost"
+                  >Door: github.com/the-friendly-ghost</a
+                >
+              </p>
+            </div>
+            <div id="grid-right" class="grid-item">
+              <p>Opnieuw spelen?</p>
+              <button id="again-btn" class="btn">Speel opnieuw</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Game section -->
     <div id="map">
-      <div id="textBox">
-        <div id="leftBox" class="infoBox">
+      <div id="text-box">
+        <div id="left-box" class="info-box">
           <p id="ah-address"></p>
-          <p id="distanceScore"></p>
+          <p id="distance-score"></p>
         </div>
-        <div id="rightBox" class="infoBox btn">
+        <div id="right-box" class="info-box btn">
           <p id="counter">20</p>
           <svg
-            id="continueBtn"
+            id="continue-btn"
             class="hidden"
             xmlns="http://www.w3.org/2000/svg"
             width="64"
@@ -126,6 +128,8 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
+
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <!-- Insert app script -->
   <script defer type="module" src="/js/main.js"></script>
