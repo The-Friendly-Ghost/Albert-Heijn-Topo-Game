@@ -29,7 +29,7 @@ export class App {
 
     this.#sb = supabase.createClient(
       import.meta.env.SUPABASE_URL,
-      import.meta.env.VITE_SUPABASE_ANON_KEY
+      import.meta.env.SUPABASE_ANON_KEY
     );
 
     this.init();
