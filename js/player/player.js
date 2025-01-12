@@ -1,27 +1,33 @@
 "use strict";
 
 export class Player {
-  constructor() {
-    this.score = 0;
+  constructor(sb, score) {
+    this.score = score;
     this.name = "";
-    this.sb = supabase.createClient("URL", "KEY");
+    this.sb = sb;
     this.highScores = {};
     this.elements = {
       scoreEl: document.getElementById("score-counter"),
       isHighScore: document.getElementById("is-highscore"),
       highScoreEl: document.getElementById("highscores"),
       submitHighScore: document.getElementById("submit-score-btn"),
+      nameInput: document.getElementById("input-name"),
     };
     this.boundHandleSubmit = this.handleSubmit.bind(this);
     this.init();
   }
 
   async init() {
-    this.hide(this.elements.highScoreEl);
+    this.hide(this.elements.isHighScore);
     this.updateScore();
     await this.getHighscores();
     this.showHighscores();
     this.checkHighScore();
+
+    this.elements.submitHighScore.addEventListener(
+      "click",
+      this.boundHandleSubmit
+    );
   }
 
   updateScore() {
@@ -29,13 +35,13 @@ export class Player {
   }
 
   checkHighScore() {
-    if (this.highScores.length < 10) {
-      this.show(this.elements.highScoreEl);
+    if (this.highScores.length < 5) {
+      this.show(this.elements.isHighScore);
       return;
     }
     this.highScores.forEach((el) => {
       if (this.score > el.score) {
-        this.show(this.elements.highScoreEl);
+        this.show(this.elements.isHighScore);
       }
     });
   }
@@ -59,23 +65,63 @@ export class Player {
     this.highScores = data;
   }
 
-  handleSubmit() {
-    this.elements.submitHighScore.addEventListener("click", async (e) => {
-      const { error } = await supabase
-        .from("highscores")
-        .insert({ name: this.name, score: this.score });
-    });
+  showHighscores() {
+    const html = `  
+        <table id="highscore-table">  
+            <tr>  
+                <th>Naam</th>  
+                <th>Score</th>  
+            </tr>  
+            ${this.highScores
+              .map(
+                (el) => `  
+                <tr>  
+                    <td>${el.name}</td>  
+                    <td>${el.score}</td>  
+                </tr>  
+            `
+              )
+              .join("")}  
+        </table>  
+    `;
+
+    this.elements.highScoreEl.innerHTML = html;
   }
 
-  showHighscores() {
-    this.highScores.forEach((el) => {
-      const html = `<p>${el.name} - ${el.score}</p>`;
-      this.elements.highScoreEl.insertAdjacentHTML("beforeend", html);
-    });
+  async handleSubmit(e) {
+    e.preventDefault();
+    const name = this.elements.nameInput.value;
+    if (!name) {
+      console.log("Geen naam ingevuld");
+      return;
+    }
+    this.name = name;
+    try {
+      const { error } = await this.sb
+        .from("highscores")
+        .insert({ name: this.name, score: this.score });
+
+      if (error) throw error;
+
+      // refresh html
+      await this.getHighscores();
+      this.showHighscores();
+      this.hide(this.elements.isHighScore);
+
+      // Clear input en verwijder listener
+      this.elements.nameInput.value = "";
+      this.elements.submitHighScore.removeEventListener(
+        "click",
+        this.boundHandleSubmit
+      );
+    } catch (error) {
+      console.error("Error submitting score:", error);
+    }
   }
 
   setName(name) {
-    this.name = name;
+    const newName = this.elements.nameInput.textContent;
+    if (newName !== "") this.name = name;
   }
 
   hide(el) {

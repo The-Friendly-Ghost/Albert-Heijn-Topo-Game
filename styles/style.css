@@ -20,6 +20,31 @@ body {
   display: none !important;
 }
 
+.big-text {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.X-big-text {
+  font-size: 58px;
+  margin: 0;
+}
+
+.small-text {
+  margin: 0;
+  font-size: 14px;
+  color: white;
+}
+
+.link-text {
+  text-decoration: underline;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
 .info-box {
   border-radius: 10px;
   background-color: var(--box-bg);
@@ -36,8 +61,57 @@ body {
   cursor: pointer;
 }
 
+.btn__big {
+  min-height: 70px;
+  height: 70px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+
+.btn__small {
+  background-color: var(--primary-color);
+  min-height: 40px;
+  height: 40px;
+  width: 100px;
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.input__small {
+  min-height: 40px;
+  height: 40px;
+  width: 200px;
+  border: 0;
+  border-radius: 10px;
+  font-weight: bold;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
 .btn:hover {
   background-color: var(--tertiary-color);
+}
+
+p {
+  margin-block-start: 10px;
+  margin-block-end: 10px;
+}
+
+th,
+td {
+  width: 50%;
+  text-align: left;
+}
+
+td {
+  border-bottom: 1px solid var(--primary-color);
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 
 #outer-app {
@@ -90,15 +164,6 @@ body {
   justify-content: center;
   gap: 20px;
 }
-#start-btn {
-  min-height: 70px;
-  height: 70px;
-  border: 0;
-  border-radius: 10px;
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
-}
 
 #music {
   display: flex;
@@ -109,19 +174,41 @@ body {
 /* End section */
 #end-section {
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #end-grid {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
+  display: grid;
+  gap: 20px; /* ruimte tussen items */
+  grid-template-columns: 1fr; /* standaard 1 kolom */
+}
+
+@media (min-width: 1024px) {
+  /* desktop breakpoint */
+  #end-grid {
+    grid-template-columns: 1fr 1fr; /* 2 kolommen op desktop */
+    row-gap: 100px;
+  }
 }
 
 .grid-item {
+  display: grid;
+
+  flex-grow: 1;
+  gap: 10px;
+}
+
+#made-by {
+  margin-top: 10px;
+  justify-content: end;
+}
+
+#highscores {
+  min-height: 180px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  flex-basis: 300px;
+  justify-content: flex-start;
 }
 
 /* Game section */
@@ -153,11 +240,8 @@ body {
 
 #ah-address,
 #distance-score {
-  margin: 0;
-  font-size: 24px;
   color: black;
   text-align: center;
-  font-weight: bold;
 }
 
 #right-box {

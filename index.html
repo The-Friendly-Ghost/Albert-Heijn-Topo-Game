@@ -32,7 +32,7 @@
               seconde gaan er daarnaast ook nog 2 punten van je score af
             </p>
           </div>
-          <button id="start-btn" class="btn">Start</button>
+          <button id="start-btn" class="btn btn__big hidden">Start</button>
           <div id="music">
             <small
               >Kun je slecht tegen stiltes? Wil je extra motivatie? Of wil je
@@ -74,22 +74,51 @@
         <div id="end-section" class="hidden">
           <div id="end-grid">
             <div id="grid-left" class="grid-item">
-              <p id="score">Jouw score: <span id="score-count">0</span></p>
-              <p id="is-highscore" class="hidden">Je hebt een highscore!</p>
-              <p>Top-5 scores van de laatste 30 dagen</p>
-              <div id="highscores"></div>
-              <button id="submit-score-btn" class="btn">Stuur score</button>
-              <p>
-                <a href="https://github.com/the-friendly-ghost"
-                  >Door: github.com/the-friendly-ghost</a
-                >
+              <p id="score" class="X-big-text">
+                Jouw score: <span id="score-counter">0</span>
               </p>
+              <div id="is-highscore" class="hidden">
+                <p>
+                  Je hebt een highscore! Vul je naam in om je highscore op te
+                  slaan.
+                </p>
+                <input
+                  type="text"
+                  id="input-name"
+                  class="input__small"
+                  placeholder="Naam"
+                />
+                <button id="submit-score-btn" class="btn btn__small">
+                  Stuur score
+                </button>
+              </div>
+            </div>
+            <div>
+              <p>Top-5 scores van de laatste 30 dagen</p>
+              <div id="highscores" class="info-box">
+                <table>
+                  <tr>
+                    <th>Naam</th>
+                    <th>Score</th>
+                  </tr>
+                </table>
+              </div>
             </div>
             <div id="grid-right" class="grid-item">
-              <p>Opnieuw spelen?</p>
-              <button id="again-btn" class="btn">Speel opnieuw</button>
+              <p class="big-text">Opnieuw spelen?</p>
+              <button id="again-btn" class="btn btn__big">Speel opnieuw</button>
             </div>
           </div>
+          <div id="made-by" class="flex-grow"></div>
+          <p class="small-text">
+            Gemaakt door:
+            <a
+              class="link-text small-text"
+              id="github-link"
+              href="https://github.com/the-friendly-ghost"
+              >github.com/the-friendly-ghost</a
+            >
+          </p>
         </div>
       </div>
     </div>
@@ -98,8 +127,8 @@
     <div id="map">
       <div id="text-box">
         <div id="left-box" class="info-box">
-          <p id="ah-address"></p>
-          <p id="distance-score"></p>
+          <p id="ah-address" class="big-text"></p>
+          <p id="distance-score" class="big-text"></p>
         </div>
         <div id="right-box" class="info-box btn">
           <p id="counter">20</p>

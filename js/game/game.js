@@ -52,6 +52,7 @@ export class Game {
       nextBtn: document.getElementById("continue-btn"),
       counter: document.getElementById("counter"),
       mapElement: document.getElementById("map"),
+      startBtn: document.getElementById("start-btn"),
     };
 
     this.handleMapClick = this.handleMapClick.bind(this);
@@ -76,6 +77,7 @@ export class Game {
     this.locations = locations.osm.node.slice();
     this.map.init();
     this.setupEventListeners();
+    this.elements.startBtn.classList.remove("hidden");
     // this.startRound();
   }
 

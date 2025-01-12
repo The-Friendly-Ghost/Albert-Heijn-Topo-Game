@@ -11,6 +11,7 @@ export class App {
   #boundHandleGameEnd;
   #boundHandleStart;
   #boundHandlePlayAgain;
+  #sb;
 
   constructor() {
     this.elements = {
@@ -26,22 +27,27 @@ export class App {
     this.#boundHandleStart = this.handleStart.bind(this);
     this.#boundHandlePlayAgain = this.handlePlayAgain.bind(this);
 
+    this.#sb = supabase.createClient(
+      import.meta.env.SUPABASE_URL,
+      import.meta.env.VITE_SUPABASE_ANON_KEY
+    );
+
     this.init();
   }
 
   async init() {
     this.resetApp();
-    this.setupEventListeners();
   }
 
   resetApp() {
+    this.hide(this.elements.startBtn);
     this.cleanupEventListeners();
     if (this.#game) {
       this.#game.destroy();
     }
     this.#game = new Game();
-    this.showWelcome();
     this.setupEventListeners();
+    this.showWelcome();
     this.#music.stopMusic();
   }
 
@@ -77,14 +83,10 @@ export class App {
   }
 
   handleGameEnd() {
-    this.#player = new Player();
+    this.#player = new Player(this.#sb, this.#game.state.score);
     this.#player.score = this.#game.state.score;
     this.showEnd();
     this.#music.stopMusic();
-  }
-
-  startGame() {
-    this.elements.this.#game.startRound();
   }
 
   showWelcome() {
