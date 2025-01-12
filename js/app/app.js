@@ -1,6 +1,6 @@
 "use strict";
 
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../config.js";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../supabaseConfig.js";
 import { Game } from "../game/game.js";
 import { Player } from "../player/player.js";
 import { Music } from "../game/music.js";
