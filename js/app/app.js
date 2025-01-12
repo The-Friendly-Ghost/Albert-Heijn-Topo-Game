@@ -27,10 +27,7 @@ export class App {
     this.#boundHandleStart = this.handleStart.bind(this);
     this.#boundHandlePlayAgain = this.handlePlayAgain.bind(this);
 
-    this.#sb = supabase.createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
-    );
+    this.#sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     this.init();
   }
