@@ -28,8 +28,8 @@ export class App {
     this.#boundHandlePlayAgain = this.handlePlayAgain.bind(this);
 
     this.#sb = supabase.createClient(
-      import.meta.env.SUPABASE_URL,
-      import.meta.env.SUPABASE_ANON_KEY
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_ANON_KEY
     );
 
     this.init();
