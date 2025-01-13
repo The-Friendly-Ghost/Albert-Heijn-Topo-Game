@@ -1,7 +1,7 @@
 # Albert Heijn Finder
 [Can be played here!](https://peppy-starlight-8332d7.netlify.app/)
 
-Train je topografie kennis en leer tegelijkertijd waar alle Albert Heijns in Nederland zijn. Handig toch?
+Train your topography knowledge and simultaneously learn where all the Albert Heijns in the Netherlands are. Convenient, right?
 
 ## Reason for this project
 I built this project on my path to becoming better at JavaScript. I wanted to create a fun game where I would improve in multiple aspects of JavaScript.  Additionally, Albert Heijn seems like a nice employer to me, maybe this project is nice to include in my motivation letter ;)
