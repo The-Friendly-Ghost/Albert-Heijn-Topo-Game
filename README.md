@@ -20,7 +20,7 @@ I built this project on my path to becoming better at JavaScript. I wanted to cr
 
 --------------------------------------------------------------
 
-#NL - Albert Heijn Topografiespel
+# NL - Albert Heijn Topografiespel
 [Speel hier!](https://peppy-starlight-8332d7.netlify.app/)
 
 Train je topografie kennis en leer tegelijkertijd waar alle Albert Heijns in Nederland zijn. Handig toch?
