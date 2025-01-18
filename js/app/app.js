@@ -2,8 +2,8 @@
 
 // I know this is not best practise..  
 // But implementing the env variables on Azure took me ages, and it's not that important for this project anyway ;) Maybe I'll fix it later
-SUPABASE_URL = "https://vnwnpulaqhhamrxprsbl.supabase.co";
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZud25wdWxhcWhoYW1yeHByc2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY2MjEzNDAsImV4cCI6MjA1MjE5NzM0MH0.rQTbuX3zSKg-13y96iymSeP6jm0Ea25ILuU3CrhVyRc";
+const SUPABASE_URL = "https://vnwnpulaqhhamrxprsbl.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZud25wdWxhcWhoYW1yeHByc2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY2MjEzNDAsImV4cCI6MjA1MjE5NzM0MH0.rQTbuX3zSKg-13y96iymSeP6jm0Ea25ILuU3CrhVyRc";
 
 import { Game } from "../game/game.js";
 import { Player } from "../player/player.js";
