@@ -1,11 +1,12 @@
 "use strict";
 
 // import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../supabaseConfig.js";
-const supabaseUrl = window.__env__.SUPABASE_URL;  
-const supabaseKey = window.__env__.SUPABASE_ANON_KEY;
+const supabaseUrl = '%SUPABASE_URL%';  
+const supabaseKey = '%SUPABASE_ANON_KEY%';
 import { Game } from "../game/game.js";
 import { Player } from "../player/player.js";
 import { Music } from "../game/music.js";
+console.log(`url: ${supabaseURL} - key: ${supabaseKey}` 
 
 export class App {
   #game;
