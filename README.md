@@ -1,5 +1,5 @@
 # Albert Heijn Finder
-[Can be played here!](https://peppy-starlight-8332d7.netlify.app/)
+[Can be played here!](https://happy-rock-002405503.4.azurestaticapps.net/)
 
 Train your topography knowledge and simultaneously learn where all the Albert Heijns in the Netherlands (and Belgium!) are. Convenient, right?
 
@@ -21,7 +21,7 @@ I built this project on my path to becoming better at JavaScript. I wanted to cr
 --------------------------------------------------------------
 
 # NL - Albert Heijn Topografiespel
-[Speel hier!](https://peppy-starlight-8332d7.netlify.app/)
+[Speel hier!](https://happy-rock-002405503.4.azurestaticapps.net/)
 
 Train je topografie kennis en leer tegelijkertijd waar alle Albert Heijns in Nederland (en België!) zijn. Handig toch?
 
