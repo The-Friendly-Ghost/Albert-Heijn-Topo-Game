@@ -6,7 +6,7 @@ const supabaseKey = '%SUPABASE_ANON_KEY%';
 import { Game } from "../game/game.js";
 import { Player } from "../player/player.js";
 import { Music } from "../game/music.js";
-console.log(`url: ${supabaseURL} - key: ${supabaseKey}` 
+console.log(`url: ${supabaseURL} - key: ${supabaseKey}`);
 
 export class App {
   #game;
