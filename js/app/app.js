@@ -1,8 +1,8 @@
 "use strict";
 
 // import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../supabaseConfig.js";
-const supabaseUrl = window.ENV.SUPABASE_URL;  
-const supabaseKey = window.ENV.SUPABASE_ANON_KEY; 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;  
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 import { Game } from "../game/game.js";
 import { Player } from "../player/player.js";
 import { Music } from "../game/music.js";
