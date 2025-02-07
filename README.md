@@ -4,7 +4,7 @@
 Train your topography knowledge and simultaneously learn where all the Albert Heijns in the Netherlands (and Belgium!) are. Convenient, right?
 
 ## Reason for this project
-I built this project on my path to becoming better at JavaScript. I wanted to create a fun game where I would improve in multiple aspects of JavaScript.  Additionally, Albert Heijn seems like a nice employer to me, maybe this project is nice to include in my motivation letter ;)
+I built this project on my path to becoming better at JavaScript. I wanted to create a fun game where I would improve in multiple aspects of JavaScript. 
 
 ## Required / trained skills:
 - Object Oriented Programming
@@ -26,7 +26,7 @@ I built this project on my path to becoming better at JavaScript. I wanted to cr
 Train je topografie kennis en leer tegelijkertijd waar alle Albert Heijns in Nederland (en België!) zijn. Handig toch?
 
 ## Waarom dit project?
-Ik heb dit project gebouwd in mijn pad om beter in Javascript te worden. Ik wilde een leuk spel maken waarbij ik beter zou worden met meerdere facetten van Javascript. Daarnaast lijkt Albert Heijn mij wel een leuke werkgever, misschien is dit project leuk voor op mijn motivatiebrief ;)
+Ik heb dit project gebouwd in mijn pad om beter in Javascript te worden. Ik wilde een leuk spel maken waarbij ik beter zou worden met meerdere facetten van Javascript. 
 
 ## Benodigde / getrainde skills:
 - Object Oriented Programming
